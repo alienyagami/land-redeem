@@ -164,6 +164,32 @@
             background-color: #d9d9d9;
         }
 
+        .redeem-btn.loading {
+            pointer-events: none;
+            color: transparent;
+            position: relative;
+        }
+
+        .redeem-btn.loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid #c4c4c4;
+            border-top-color: #888;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
         .terms-text {
             margin-top: 28px;
             font-size: 13px;
@@ -476,13 +502,21 @@
                 return;
             }
 
-            if (code === VALID_CODE) {
-                hideError();
-                showModal();
-                launchConfetti();
-            } else {
-                showError('Invalid code. Please check the code and try again.');
-            }
+            if (redeemBtn.classList.contains('loading')) return;
+
+            hideError();
+            redeemBtn.classList.add('loading');
+
+            setTimeout(() => {
+                redeemBtn.classList.remove('loading');
+
+                if (code === VALID_CODE) {
+                    showModal();
+                    launchConfetti();
+                } else {
+                    showError('Invalid code. Please check the code and try again.');
+                }
+            }, 4000);
         });
 
         codeInput.addEventListener('keydown', (e) => {
